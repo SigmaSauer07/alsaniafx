@@ -1,0 +1,32 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: AlsaniaFX
+    network: sepolia
+    source:
+      address: "YOUR_AlsaniaFX_CONTRACT_ADDRESS"
+      abi: AlsaniaFX
+      startBlock: YOUR_DEPLOYMENT_BLOCK_NUMBER
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: typescript
+      entities:
+        - Listing
+        - Sale
+        - Offer
+      abis:
+        - name: AlsaniaFX
+          file: ./abis/AlsaniaFX.json
+      eventHandlers:
+        - event: Listed(uint256,address,address,uint256,uint256)
+          handler: handleListed
+        - event: Sold(uint256,address)
+          handler: handleSold
+        - event: OfferPlaced(uint256,address,uint256)
+          handler: handleOfferPlaced
+        - event: OfferAccepted(uint256,address)
+          handler: handleOfferAccepted
+      file: ./src/mapping.ts

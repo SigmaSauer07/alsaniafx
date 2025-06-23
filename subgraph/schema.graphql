@@ -1,0 +1,24 @@
+type Listing @entity {
+  id: ID!
+  seller: Bytes!
+  nftAddress: Bytes!
+  tokenId: BigInt!
+  price: BigInt!
+  isSold: Boolean!
+}
+
+type Sale @entity {
+  id: ID!
+  buyer: Bytes!
+  tokenId: BigInt!
+  price: BigInt!
+  timestamp: BigInt!
+}
+
+type Offer @entity {
+  id: ID!
+  listingId: BigInt!
+  bidder: Bytes!
+  amount: BigInt!
+  timestamp: BigInt!
+}
