@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlsaniaFX - Sovereign NFT Marketplace</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Meta -->
+    <meta name="description" content="AlsaniaFX - The sovereign NFT marketplace built on Alsania Chain. Create, trade, and discover unique digital assets.">
+    <meta property="og:title" content="AlsaniaFX - Sovereign NFT Marketplace">
+    <meta property="og:description" content="The future of decentralized NFT trading">
+    <meta property="og:type" content="website">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="assets/images/alsania-logo.svg" alt="Alsania" class="logo">
+                <span class="brand-text">AlsaniaFX</span>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="#marketplace" class="nav-link active">Marketplace</a>
+                <a href="#create" class="nav-link">Create</a>
+                <a href="#collections" class="nav-link">Collections</a>
+                <a href="#profile" class="nav-link">Profile</a>
+                <a href="admin.html" class="nav-link admin-only" style="display: none;">Admin</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="btn btn-outline" id="connectWallet">Connect Wallet</button>
+                <div class="wallet-info" id="walletInfo" style="display: none;">
+                    <span class="wallet-address" id="walletAddress"></span>
+                    <button class="btn btn-small" id="disconnectWallet">Disconnect</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                The <span class="text-neon">Sovereign</span><br>
+                NFT Marketplace
+            </h1>
+            <p class="hero-subtitle">
+                Create, trade, and discover unique digital assets on the Alsania ecosystem.
+                Built for creators, collectors, and visionaries.
+            </p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" onclick="scrollToSection('marketplace')">
+                    Explore Marketplace
+                </button>
+                <button class="btn btn-outline" onclick="scrollToSection('create')">
+                    Start Creating
+                </button>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="neon-grid"></div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-value" id="totalNFTs">0</span>
+                    <span class="stat-label">NFTs Created</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="totalVolume">0 ETH</span>
+                    <span class="stat-label">Total Volume</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="totalUsers">0</span>
+                    <span class="stat-label">Active Users</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="totalCollections">0</span>
+                    <span class="stat-label">Collections</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Marketplace Section -->
+    <section id="marketplace" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Marketplace</h2>
+                <div class="section-controls">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search NFTs, collections, creators..." id="searchInput">
+                        <button class="search-btn" id="searchBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="filter-controls">
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="all">All Categories</option>
+                            <option value="art">Art</option>
+                            <option value="collectibles">Collectibles</option>
+                            <option value="gaming">Gaming</option>
+                            <option value="music">Music</option>
+                            <option value="photography">Photography</option>
+                        </select>
+                        <select id="priceFilter" class="filter-select">
+                            <option value="all">All Prices</option>
+                            <option value="low-high">Price: Low to High</option>
+                            <option value="high-low">Price: High to Low</option>
+                            <option value="under-1">Under 1 ETH</option>
+                            <option value="1-10">1-10 ETH</option>
+                            <option value="over-10">Over 10 ETH</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nft-grid" id="nftGrid">
+                <!-- NFTs will be loaded here -->
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner"></div>
+                    <p>Loading NFTs...</p>
+                </div>
+            </div>
+
+            <div class="load-more-container">
+                <button class="btn btn-outline" id="loadMoreBtn" style="display: none;">
+                    Load More NFTs
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Create Section -->
+    <section id="create" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Create NFTs</h2>
+                <p class="section-subtitle">Mint your digital assets on the Alsania ecosystem</p>
+            </div>
+
+            <div class="create-options">
+                <div class="create-card" onclick="openCreateModal('erc721')">
+                    <div class="create-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21,15 16,10 5,21"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Single NFT (ERC-721)</h3>
+                    <p>Create unique, one-of-a-kind digital assets</p>
+                </div>
+
+                <div class="create-card" onclick="openCreateModal('erc1155')">
+                    <div class="create-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                        </svg>
+                    </div>
+                    <h3>Multi-Edition (ERC-1155)</h3>
+                    <p>Create multiple copies of your digital asset</p>
+                </div>
+
+                <div class="create-card" onclick="openCreateModal('lazy')">
+                    <div class="create-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                        </svg>
+                    </div>
+                    <h3>Lazy Mint</h3>
+                    <p>Create gasless NFTs - buyers pay minting costs</p>
+                </div>
+
+                <div class="create-card" onclick="openCreateModal('erc20')">
+                    <div class="create-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="14.31" y1="8" x2="20.05" y2="17.94"></line>
+                            <line x1="9.69" y1="8" x2="21.17" y2="8"></line>
+                            <line x1="7.38" y1="12" x2="13.12" y2="2.06"></line>
+                            <line x1="9.69" y1="16" x2="3.95" y2="6.06"></line>
+                            <line x1="14.31" y1="16" x2="2.83" y2="16"></line>
+                            <line x1="16.62" y1="12" x2="10.88" y2="21.94"></line>
+                        </svg>
+                    </div>
+                    <h3>ERC-20 Token</h3>
+                    <p>Create custom tokens for trading</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collections Section -->
+    <section id="collections" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Collections</h2>
+                <p class="section-subtitle">Discover curated collections from top creators</p>
+            </div>
+
+            <div class="collections-grid" id="collectionsGrid">
+                <!-- Collections will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="section">
+        <div class="container">
+            <div class="profile-content" id="profileContent">
+                <div class="connect-prompt">
+                    <h2>Connect Your Wallet</h2>
+                    <p>Connect your wallet to view your profile, NFTs, and trading history</p>
+                    <button class="btn btn-primary" onclick="connectWallet()">Connect Wallet</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Create NFT Modal -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="createModalTitle">Create NFT</h3>
+                <button class="modal-close" onclick="closeModal('createModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createForm">
+                    <div class="form-group">
+                        <label for="nftName">Name</label>
+                        <input type="text" id="nftName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nftDescription">Description</label>
+                        <textarea id="nftDescription" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nftImage">Image</label>
+                        <div class="file-upload">
+                            <input type="file" id="nftImage" accept="image/*" required>
+                            <div class="upload-placeholder">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
+                                    <circle cx="12" cy="13" r="3"></circle>
+                                </svg>
+                                <p>Click to upload image</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="priceGroup">
+                        <label for="nftPrice">Price (ETH)</label>
+                        <input type="number" id="nftPrice" step="0.001" min="0">
+                    </div>
+                    
+                    <div class="form-group" id="royaltyGroup">
+                        <label for="nftRoyalty">Royalty (%)</label>
+                        <input type="number" id="nftRoyalty" min="0" max="10" value="2.5">
+                    </div>
+                    
+                    <div class="form-group" id="supplyGroup" style="display: none;">
+                        <label for="nftSupply">Supply</label>
+                        <input type="number" id="nftSupply" min="1" value="1">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('createModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create NFT</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- NFT Detail Modal -->
+    <div class="modal" id="nftModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="nftModalTitle">NFT Details</h3>
+                <button class="modal-close" onclick="closeModal('nftModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="nft-detail-content" id="nftDetailContent">
+                    <!-- NFT details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="notifications" id="notifications"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loadingMessage">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/web3.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/marketplace.js"></script>
+    <script src="js/nft.js"></script>
+    <script src="js/collections.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -413,8 +413,8 @@ describe("AlsaniaFX NFT Marketplace", function () {
 
     it("Should fail to verify collection as non-owner", async function () {
       const collectionAddress = await nftFactory.getAddress();
-      
-      await expect(
+
+    await expect(
         marketplace.connect(creator).verifyCollection(collectionAddress, true)
       ).to.be.revertedWith("Ownable: caller is not the owner");
     });

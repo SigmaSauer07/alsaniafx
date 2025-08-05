@@ -3,6 +3,7 @@ pragma solidity ^0.8.30;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
@@ -12,11 +13,12 @@ import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 
 contract AlsaniaFX is
     Initializable,
+    OwnableUpgradeable,
     AccessControlUpgradeable,
-    ReentrancyGuardUpgradeable,
-    PausableUpgradeable,
     ERC2981Upgradeable,
-    UUPSUpgradeable
+    UUPSUpgradeable,
+    ReentrancyGuardUpgradeable,
+    PausableUpgradeable
 {
     // Role definitions
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
@@ -101,6 +103,7 @@ contract AlsaniaFX is
     }
 
     function initialize(address _owner) public initializer {
+        __Ownable_init(_owner);
         __AccessControl_init();
         __ReentrancyGuard_init();
         __Pausable_init();
@@ -199,7 +202,7 @@ contract AlsaniaFX is
         require(nft.isApprovedForAll(msg.sender, address(this)) || nft.getApproved(tokenId) == address(this), "Not approved");
 
         uint256 listingId = listingCounter++;
-        
+
         listings[listingId] = Listing({
             nftContract: nftContract,
             tokenId: tokenId,
@@ -425,9 +428,17 @@ contract AlsaniaFX is
         return approvedERC20Tokens[tokenAddress];
     }
 
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     * Ensures compatibility with AccessControl and ERC2981 interfaces.
+     */
     function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlUpgradeable, ERC2981Upgradeable) returns (bool) {
-        return super.supportsInterface(interfaceId);
+        return AccessControlUpgradeable.supportsInterface(interfaceId) || ERC2981Upgradeable.supportsInterface(interfaceId);
     }
 
+    /**
+     * @dev UUPS upgrade authorization.
+     * Only the DEFAULT_ADMIN_ROLE can authorize upgrades.
+     */
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 }

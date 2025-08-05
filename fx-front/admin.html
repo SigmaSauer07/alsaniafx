@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlsaniaFX Admin Panel</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Meta -->
+    <meta name="description" content="AlsaniaFX Admin Panel - Manage marketplace settings, roles, and operations">
+    <meta name="robots" content="noindex, nofollow">
+</head>
+<body class="admin-body">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="assets/images/alsania-logo.svg" alt="Alsania" class="logo">
+                <span class="brand-text">AlsaniaFX</span>
+                <span class="admin-badge">Admin</span>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">← Back to Marketplace</a>
+            </div>
+            
+            <div class="nav-actions">
+                <div class="wallet-info" id="walletInfo">
+                    <span class="wallet-address" id="walletAddress"></span>
+                    <span class="admin-status" id="adminStatus">Checking...</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Content -->
+    <div class="admin-container">
+        <!-- Access Control Check -->
+        <div id="accessCheck" class="access-check">
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Verifying admin access...</p>
+            </div>
+        </div>
+
+        <!-- Access Denied -->
+        <div id="accessDenied" class="access-denied" style="display: none;">
+            <div class="access-denied-content">
+                <h1>🚫 Access Denied</h1>
+                <p>You don't have permission to access the admin panel.</p>
+                <p>Only users with Admin or Team roles can access this page.</p>
+                <div class="access-denied-actions">
+                    <a href="index.html" class="btn btn-primary">Return to Marketplace</a>
+                    <button class="btn btn-outline" onclick="connectWallet()">Connect Different Wallet</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminDashboard" class="admin-dashboard" style="display: none;">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Admin Dashboard</h1>
+                <p>Manage AlsaniaFX marketplace settings and operations</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <h3>Total NFTs</h3>
+                    <span class="stat-value" id="adminTotalNFTs">0</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Listings</h3>
+                    <span class="stat-value" id="adminActiveListings">0</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Volume</h3>
+                    <span class="stat-value" id="adminTotalVolume">0 ETH</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Platform Fees</h3>
+                    <span class="stat-value" id="adminPlatformFees">0 ETH</span>
+                </div>
+            </div>
+
+            <!-- Admin Tabs -->
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="showAdminTab('settings')">Settings</button>
+                <button class="admin-tab" onclick="showAdminTab('roles')">Role Management</button>
+                <button class="admin-tab" onclick="showAdminTab('tokens')">Token Management</button>
+                <button class="admin-tab" onclick="showAdminTab('analytics')">Analytics</button>
+                <button class="admin-tab" onclick="showAdminTab('security')">Security</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="admin-tab-content">
+                <!-- Settings Tab -->
+                <div id="settingsTab" class="tab-panel active">
+                    <div class="admin-section">
+                        <h2>Platform Settings</h2>
+                        
+                        <div class="settings-grid">
+                            <div class="setting-card">
+                                <h3>Platform Fee</h3>
+                                <p>Current fee: <span id="currentPlatformFee">1%</span></p>
+                                <div class="form-group">
+                                    <label for="newPlatformFee">New Fee (1-10%)</label>
+                                    <input type="number" id="newPlatformFee" min="1" max="10" step="0.1" value="1">
+                                    <button class="btn btn-primary" onclick="updatePlatformFee()">Update Fee</button>
+                                </div>
+                            </div>
+
+                            <div class="setting-card">
+                                <h3>Fee Recipient</h3>
+                                <p>Current recipient: <span id="currentFeeRecipient">Loading...</span></p>
+                                <div class="form-group">
+                                    <label for="newFeeRecipient">New Recipient Address</label>
+                                    <input type="text" id="newFeeRecipient" placeholder="0x...">
+                                    <button class="btn btn-primary" onclick="updateFeeRecipient()">Update Recipient</button>
+                                </div>
+                            </div>
+
+                            <div class="setting-card">
+                                <h3>Marketplace Controls</h3>
+                                <div class="control-buttons">
+                                    <button class="btn btn-outline" id="pauseBtn" onclick="toggleMarketplace()">
+                                        Pause Marketplace
+                                    </button>
+                                    <button class="btn btn-outline" onclick="emergencyStop()">
+                                        Emergency Stop
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="setting-card">
+                                <h3>ERC20 Trading</h3>
+                                <p>Status: <span id="erc20TradingStatus">Loading...</span></p>
+                                <button class="btn btn-primary" id="toggleERC20Btn" onclick="toggleERC20Trading()">
+                                    Toggle ERC20 Trading
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role Management Tab -->
+                <div id="rolesTab" class="tab-panel">
+                    <div class="admin-section">
+                        <h2>Role Management</h2>
+                        
+                        <div class="role-management">
+                            <div class="role-actions">
+                                <div class="role-card">
+                                    <h3>Grant Role</h3>
+                                    <form id="grantRoleForm">
+                                        <div class="form-group">
+                                            <label for="grantRoleSelect">Role</label>
+                                            <select id="grantRoleSelect">
+                                                <option value="ADMIN_ROLE">Admin</option>
+                                                <option value="TEAM_ROLE">Team</option>
+                                                <option value="MODERATOR_ROLE">Moderator</option>
+                                                <option value="APPROVER_ROLE">Approver</option>
+                                                <option value="CREATOR_ROLE">Creator</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="grantRoleAddress">Address</label>
+                                            <input type="text" id="grantRoleAddress" placeholder="0x..." required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Grant Role</button>
+                                    </form>
+                                </div>
+
+                                <div class="role-card">
+                                    <h3>Revoke Role</h3>
+                                    <form id="revokeRoleForm">
+                                        <div class="form-group">
+                                            <label for="revokeRoleSelect">Role</label>
+                                            <select id="revokeRoleSelect">
+                                                <option value="ADMIN_ROLE">Admin</option>
+                                                <option value="TEAM_ROLE">Team</option>
+                                                <option value="MODERATOR_ROLE">Moderator</option>
+                                                <option value="APPROVER_ROLE">Approver</option>
+                                                <option value="CREATOR_ROLE">Creator</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="revokeRoleAddress">Address</label>
+                                            <input type="text" id="revokeRoleAddress" placeholder="0x..." required>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger">Revoke Role</button>
+                                    </form>
+                                </div>
+
+                                <div class="role-card">
+                                    <h3>Check Role</h3>
+                                    <form id="checkRoleForm">
+                                        <div class="form-group">
+                                            <label for="checkRoleSelect">Role</label>
+                                            <select id="checkRoleSelect">
+                                                <option value="ADMIN_ROLE">Admin</option>
+                                                <option value="TEAM_ROLE">Team</option>
+                                                <option value="MODERATOR_ROLE">Moderator</option>
+                                                <option value="APPROVER_ROLE">Approver</option>
+                                                <option value="CREATOR_ROLE">Creator</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="checkRoleAddress">Address</label>
+                                            <input type="text" id="checkRoleAddress" placeholder="0x..." required>
+                                        </div>
+                                        <button type="submit" class="btn btn-outline">Check Role</button>
+                                    </form>
+                                    <div id="roleCheckResult" class="role-result"></div>
+                                </div>
+                            </div>
+
+                            <div class="current-roles">
+                                <h3>Current Role Holders</h3>
+                                <div id="roleHoldersList" class="roles-list">
+                                    <p>Loading role holders...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Token Management Tab -->
+                <div id="tokensTab" class="tab-panel">
+                    <div class="admin-section">
+                        <h2>ERC20 Token Management</h2>
+                        
+                        <div class="token-management">
+                            <div class="token-actions">
+                                <div class="token-card">
+                                    <h3>Approve Token for Trading</h3>
+                                    <form id="approveTokenForm">
+                                        <div class="form-group">
+                                            <label for="approveTokenAddress">Token Address</label>
+                                            <input type="text" id="approveTokenAddress" placeholder="0x..." required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>
+                                                <input type="checkbox" id="approveTokenStatus" checked>
+                                                Approve for trading
+                                            </label>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Update Approval</button>
+                                    </form>
+                                </div>
+
+                                <div class="token-card">
+                                    <h3>Token Factory Settings</h3>
+                                    <div class="form-group">
+                                        <label for="tokenPlatformFee">Token Platform Fee (%)</label>
+                                        <input type="number" id="tokenPlatformFee" min="0" max="10" step="0.1" value="1">
+                                        <button class="btn btn-primary" onclick="updateTokenPlatformFee()">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="approved-tokens">
+                                <h3>Approved Tokens</h3>
+                                <div id="approvedTokensList" class="tokens-list">
+                                    <p>Loading approved tokens...</p>
+                                </div>
+                            </div>
+
+                            <div class="pending-tokens">
+                                <h3>Pending Approval</h3>
+                                <div id="pendingTokensList" class="tokens-list">
+                                    <p>No pending tokens</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Tab -->
+                <div id="analyticsTab" class="tab-panel">
+                    <div class="admin-section">
+                        <h2>Marketplace Analytics</h2>
+                        
+                        <div class="analytics-grid">
+                            <div class="analytics-card">
+                                <h3>Trading Volume (7 days)</h3>
+                                <div class="chart-container">
+                                    <canvas id="volumeChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="analytics-card">
+                                <h3>User Activity</h3>
+                                <div class="activity-stats">
+                                    <div class="activity-stat">
+                                        <span class="stat-label">Daily Active Users</span>
+                                        <span class="stat-value" id="dailyActiveUsers">0</span>
+                                    </div>
+                                    <div class="activity-stat">
+                                        <span class="stat-label">New Users (7d)</span>
+                                        <span class="stat-value" id="newUsers">0</span>
+                                    </div>
+                                    <div class="activity-stat">
+                                        <span class="stat-label">Returning Users</span>
+                                        <span class="stat-value" id="returningUsers">0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="analytics-card">
+                                <h3>Top Collections</h3>
+                                <div id="topCollections" class="top-collections">
+                                    <p>Loading...</p>
+                                </div>
+                            </div>
+
+                            <div class="analytics-card">
+                                <h3>Revenue</h3>
+                                <div class="revenue-stats">
+                                    <div class="revenue-stat">
+                                        <span class="stat-label">Total Fees Collected</span>
+                                        <span class="stat-value" id="totalFeesCollected">0 ETH</span>
+                                    </div>
+                                    <div class="revenue-stat">
+                                        <span class="stat-label">This Month</span>
+                                        <span class="stat-value" id="monthlyRevenue">0 ETH</span>
+                                    </div>
+                                    <div class="revenue-stat">
+                                        <span class="stat-label">Average per Transaction</span>
+                                        <span class="stat-value" id="avgFeePerTx">0 ETH</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Tab -->
+                <div id="securityTab" class="tab-panel">
+                    <div class="admin-section">
+                        <h2>Security & Monitoring</h2>
+                        
+                        <div class="security-grid">
+                            <div class="security-card">
+                                <h3>System Status</h3>
+                                <div class="status-indicators">
+                                    <div class="status-item">
+                                        <span class="status-label">Marketplace</span>
+                                        <span class="status-indicator status-online" id="marketplaceStatus">Online</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span class="status-label">Smart Contracts</span>
+                                        <span class="status-indicator status-online" id="contractsStatus">Online</span>
+                                    </div>
+                                    <div class="status-item">
+                                        <span class="status-label">IPFS Gateway</span>
+                                        <span class="status-indicator status-online" id="ipfsStatus">Online</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="security-card">
+                                <h3>Recent Transactions</h3>
+                                <div id="recentTransactions" class="transaction-list">
+                                    <p>Loading recent transactions...</p>
+                                </div>
+                            </div>
+
+                            <div class="security-card">
+                                <h3>Security Alerts</h3>
+                                <div id="securityAlerts" class="alerts-list">
+                                    <div class="alert alert-success">
+                                        <span class="alert-icon">✅</span>
+                                        <span>All systems operational</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="security-card">
+                                <h3>Emergency Actions</h3>
+                                <div class="emergency-actions">
+                                    <button class="btn btn-warning" onclick="pauseAllOperations()">
+                                        Pause All Operations
+                                    </button>
+                                    <button class="btn btn-danger" onclick="emergencyWithdraw()">
+                                        Emergency Withdraw
+                                    </button>
+                                    <button class="btn btn-outline" onclick="runSecurityAudit()">
+                                        Run Security Audit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="notifications" id="notifications"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loadingMessage">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/web3.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/admin.js"></script>
+    
+    <script>
+        // Initialize admin panel
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Check wallet connection
+                if (!window.web3Manager || !window.web3Manager.isWalletConnected()) {
+                    showAccessDenied('Please connect your wallet to access the admin panel.');
+                    return;
+                }
+
+                // Check admin access
+                const hasAccess = await checkAdminAccess();
+                if (!hasAccess) {
+                    showAccessDenied('You do not have admin privileges.');
+                    return;
+                }
+
+                // Show admin dashboard
+                showAdminDashboard();
+                
+                // Load initial data
+                await loadAdminData();
+                
+            } catch (error) {
+                console.error('Admin panel initialization error:', error);
+                showAccessDenied('Error initializing admin panel.');
+            }
+        });
+
+        // Check admin access
+        async function checkAdminAccess() {
+            try {
+                const contract = window.web3Manager.getContract('marketplace');
+                if (!contract) return false;
+
+                const account = window.web3Manager.getCurrentAccount();
+                if (!account) return false;
+
+                const isAdmin = await contract.hasRole(CONFIG.ROLES.ADMIN_ROLE, account);
+                const isTeam = await contract.hasRole(CONFIG.ROLES.TEAM_ROLE, account);
+
+                return isAdmin || isTeam;
+            } catch (error) {
+                console.error('Error checking admin access:', error);
+                return false;
+            }
+        }
+
+        // Show access denied
+        function showAccessDenied(message) {
+            document.getElementById('accessCheck').style.display = 'none';
+            document.getElementById('accessDenied').style.display = 'block';
+            if (message) {
+                document.querySelector('.access-denied-content p').textContent = message;
+            }
+        }
+
+        // Show admin dashboard
+        function showAdminDashboard() {
+            document.getElementById('accessCheck').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            
+            // Update wallet info
+            const walletAddress = document.getElementById('walletAddress');
+            const adminStatus = document.getElementById('adminStatus');
+            
+            if (walletAddress) {
+                walletAddress.textContent = UTILS.formatAddress(window.web3Manager.getCurrentAccount());
+            }
+            if (adminStatus) {
+                adminStatus.textContent = 'Admin';
+                adminStatus.className = 'admin-status admin-verified';
+            }
+        }
+
+        // Load admin data
+        async function loadAdminData() {
+            try {
+                // Load platform settings
+                await loadPlatformSettings();
+                
+                // Load statistics
+                await loadAdminStats();
+                
+                // Load role holders
+                await loadRoleHolders();
+                
+                // Load approved tokens
+                await loadApprovedTokens();
+                
+            } catch (error) {
+                console.error('Error loading admin data:', error);
+            }
+        }
+
+        // Show admin tab
+        function showAdminTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update tab panels
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+    </script>
+</body>
+</html>

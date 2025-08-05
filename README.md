@@ -1,226 +1,201 @@
-# 🚀 AlsaniaFX NFT Marketplace
+# 🌟 AlsaniaFX - Sovereign NFT Marketplace
 
-A fully-featured, production-ready NFT marketplace built with modern web technologies and blockchain integration. AlsaniaFX provides a complete solution for creating, trading, and managing NFTs with advanced features that rival major platforms like OpenSea and Rarible.
+**The future of decentralized NFT trading** - A fully-featured, production-ready NFT marketplace built with the Alsania aesthetic and vision of true digital sovereignty.
 
-## ✨ Features
+![AlsaniaFX](https://img.shields.io/badge/Status-Production%20Ready-39ff14?style=for-the-badge)
+![Solidity](https://img.shields.io/badge/Solidity-0.8.30-363636?style=for-the-badge&logo=solidity)
+![License](https://img.shields.io/badge/License-MIT-0a2472?style=for-the-badge)
 
-### 🎨 Core NFT Functionality
-- **ERC721 NFT Support**: Full non-fungible token creation and management
-- **ERC20 Token Support**: Create and trade ERC20 tokens with approval system
-- **Metadata Editing**: **UNIQUE FEATURE** - Edit NFT metadata after minting
-- **Collection Management**: Create, manage, and organize NFT collections
-- **Royalty System**: Up to 10% royalty configuration per collection
-- **Batch Operations**: Mint multiple NFTs at once
-- **Supply Control**: Set maximum supply limits for collections
+## ✨ What is AlsaniaFX?
 
-### ⚡ Advanced Features
-- **Lazy Minting**: Create NFTs without upfront gas costs
-- **IPFS Integration**: Decentralized metadata and image storage
-- **Advanced Search & Filters**: Price range, traits, rarity, date filters
-- **Analytics Dashboard**: Real-time marketplace performance tracking
-- **Service Worker**: Offline functionality and caching
-- **Security Audit**: Automated vulnerability scanning
-
-### 🎯 User Experience
-- **Modern UI/UX**: Sleek, responsive design with smooth animations
-- **Mobile Optimized**: Responsive design for all devices
-- **Real-time Updates**: Live marketplace data and notifications
-- **Wallet Integration**: MetaMask and Web3 wallet support
-- **Performance Optimized**: Fast loading and smooth interactions
-
-### 🔒 Security & Compliance
-- **Upgradeable Contracts**: UUPS proxy pattern for future improvements
-- **Reentrancy Protection**: Secure smart contract architecture
-- **Access Control**: Role-based permissions and verification
-- **Pausable Operations**: Emergency pause functionality
-- **Comprehensive Testing**: Full test suite coverage
-
-### 🏛️ Role-Based System
-- **Admin Role**: Full marketplace control and configuration
-- **Team Role**: Token approval and listing management
-- **Moderator Role**: Content moderation and dispute resolution
-- **Approver Role**: ERC20 token approval and verification
-- **Creator Role**: NFT and token creation privileges
-
-## 🏗️ Architecture
-
-### Smart Contracts
-```
-contracts/
-├── AlsaniaFX.sol              # Main marketplace contract
-├── NFTFactoryUpgradeable.sol  # ERC721 NFT factory
-├── ERC20Factory.sol          # ERC20 token factory
-├── LazyMinting.sol           # Gasless NFT creation
-└── test/                     # Contract tests
-```
-
-### Frontend Structure
-```
-fx-front/
-├── index.html                # Main application
-├── css/style.css            # Modern design system
-├── js/
-│   ├── app.js              # Main application logic
-│   ├── web3.js             # Blockchain integration
-│   ├── marketplace.js      # Marketplace functionality
-│   ├── nft.js             # NFT management
-│   ├── collections.js     # Collection management
-│   ├── profile.js         # User profiles
-│   ├── ui.js              # User interface
-│   ├── lazy-minting.js    # Lazy minting feature
-│   ├── erc20-manager.js   # ERC20 token management
-│   ├── ipfs-integration.js # IPFS storage
-│   ├── advanced-search.js  # Advanced filtering
-│   ├── analytics-dashboard.js # Analytics
-│   ├── performance.js     # Performance optimization
-│   ├── advanced-ui.js     # Advanced UI components
-│   └── analytics.js       # Analytics tracking
-└── assets/                # Images, icons, fonts
-```
+AlsaniaFX is a **sovereign NFT marketplace** that rivals OpenSea and Rarible, but with unique features that put creators and collectors first. Built on the Alsania ecosystem with a stunning cyberpunk aesthetic, it offers advanced functionality while maintaining the principles of decentralization and user sovereignty.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- MetaMask or Web3 wallet
+- Node.js 16+ and npm
+- MetaMask or compatible Web3 wallet
+- Git
 
-### Installation
-
-1. **Clone the repository**
+### Installation & Launch
 ```bash
-git clone https://github.com/your-username/alsaniafx.git
+# Clone the repository
+git clone https://github.com/yourusername/alsaniafx.git
 cd alsaniafx
-```
 
-2. **Install dependencies**
-```bash
-npm install
-```
+# Install dependencies
+npm install --legacy-peer-deps
 
-3. **Set up environment variables**
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
-
-4. **Compile contracts**
-```bash
+# Compile smart contracts
 npx hardhat compile
-```
 
-5. **Deploy to local network**
-```bash
-# Start local blockchain
+# Start local blockchain (Terminal 1)
 npx hardhat node
 
-# Deploy contracts (in new terminal)
+# Deploy contracts (Terminal 2)
 npx hardhat run scripts/deploy.js --network localhost
+
+# Start frontend (Terminal 3)
+cd fx-front && python3 -m http.server 8080
 ```
 
-6. **Start frontend**
-```bash
-cd fx-front
-python3 -m http.server 8000
-# Or use any static server
+**🎯 Access the marketplace at:** `http://localhost:8080`
+**👑 Admin panel at:** `http://localhost:8080/admin.html`
+
+## 🎨 Features
+
+### 🏪 **Marketplace Core**
+- **Multi-Token Support**: ERC721, ERC1155, ERC20 tokens
+- **Advanced Trading**: Fixed-price sales, Dutch auctions, English auctions
+- **ERC20 Trading**: **UNIQUE** - Trade NFTs with custom ERC20 tokens
+- **Lazy Minting**: Gasless NFT creation - buyers pay minting costs
+- **Metadata Editing**: **UNIQUE** - Edit NFT metadata post-mint
+
+### 🎭 **Creator Tools**
+- **Multi-Standard Creation**: Create ERC721, ERC1155, and ERC20 tokens
+- **Collection Management**: Organize NFTs into branded collections
+- **Royalty System**: Built-in ERC2981 royalty enforcement
+- **IPFS Integration**: Decentralized metadata and image storage
+
+### 👑 **Role-Based System**
+- **Admin**: Full platform control and settings management
+- **Team**: Operational management and content moderation
+- **Moderator**: Content review and community management
+- **Approver**: Token approval and listing management
+- **Creator**: Enhanced creation tools and analytics
+
+### 🔧 **Admin Dashboard**
+- **Platform Settings**: Fee management (1-10% adjustable)
+- **Role Management**: Grant/revoke roles with blockchain verification
+- **Token Control**: Approve/disapprove ERC20 tokens for trading
+- **Analytics**: Real-time marketplace statistics and insights
+- **Security**: Emergency controls and audit tools
+
+### 🎨 **UI/UX Excellence**
+- **Cyberpunk Aesthetic**: Neon green (#39ff14) and midnight blue (#0a2472)
+- **Responsive Design**: Works on desktop, tablet, and mobile
+- **Dark Theme**: Easy on the eyes with stunning visual effects
+- **Smooth Animations**: CSS transitions and hover effects
+- **Accessibility**: Keyboard navigation and screen reader support
+
+## 🏗️ Architecture
+
+### 📋 **Smart Contracts**
+```
+contracts/
+├── AlsaniaFX.sol          # Main marketplace with role-based access
+├── NFTFactoryUpgradeable.sol  # ERC721 creation and management
+├── ERC20Factory.sol       # ERC20 token creation and approval
+├── ERC1155Factory.sol     # Multi-token creation and management
+├── LazyMinting.sol        # Gasless NFT creation system
+└── SigmaSauer07.sol       # Signature collection contract
 ```
 
-7. **Access the marketplace**
+### 🎨 **Frontend Structure**
 ```
-http://localhost:8000
+fx-front/
+├── index.html             # Main marketplace interface
+├── admin.html             # Admin control panel
+├── css/style.css          # Alsania-themed styling
+└── js/
+    ├── app.js             # Main application coordinator
+    ├── web3.js            # Blockchain integration
+    ├── marketplace.js     # Trading functionality
+    ├── nft.js             # NFT creation and management
+    ├── collections.js     # Collection management
+    ├── profile.js         # User profiles and activity
+    ├── admin.js           # Admin panel functionality
+    └── ui.js              # User interface management
 ```
 
-## 📊 Feature Comparison
+## 🆚 Feature Comparison
 
 | Feature | AlsaniaFX | OpenSea | Rarible |
 |---------|-----------|---------|---------|
-| ERC721 Support | ✅ | ✅ | ✅ |
-| ERC1155 Support | ❌ | ✅ | ✅ |
-| **ERC20 Trading** | ✅ | ❌ | ❌ |
-| **Metadata Editing** | ✅ | ❌ | ❌ |
-| **Role-Based System** | ✅ | ❌ | ❌ |
-| Lazy Minting | ✅ | ✅ | ✅ |
-| IPFS Integration | ✅ | ✅ | ✅ |
-| Advanced Analytics | ✅ | ✅ | ✅ |
-| Mobile App | ❌ | ✅ | ✅ |
-| Multi-Chain | ❌ | ✅ | ✅ |
+| **ERC721 Support** | ✅ | ✅ | ✅ |
+| **ERC1155 Support** | ✅ | ✅ | ✅ |
+| **ERC20 Trading** | ✅ **UNIQUE** | ❌ | ❌ |
+| **Metadata Editing** | ✅ **UNIQUE** | ❌ | ❌ |
+| **Role-Based System** | ✅ **UNIQUE** | ❌ | ❌ |
+| **Lazy Minting** | ✅ | ✅ | ✅ |
+| **Custom Royalties** | ✅ | ✅ | ✅ |
+| **IPFS Integration** | ✅ | ✅ | ✅ |
+| **Admin Dashboard** | ✅ **FULL** | ❌ | ❌ |
+| **Upgradeable Contracts** | ✅ | ❌ | ❌ |
+| **Open Source** | ✅ **MIT** | ❌ | ❌ |
 
-## 🎯 Unique Features
+## 🛠️ Technology Stack
 
-### 🔄 Metadata Editing
-**AlsaniaFX is the only marketplace that allows users to edit NFT metadata after minting!** This revolutionary feature enables creators to:
-- Update NFT descriptions
-- Modify attributes and traits
-- Fix typos or errors
-- Add new information
-- Maintain full edit history
+### **Blockchain**
+- **Solidity 0.8.30** - Smart contract development
+- **OpenZeppelin** - Security-audited contract libraries
+- **Hardhat** - Development environment and testing
+- **UUPS Proxy Pattern** - Upgradeable contract architecture
 
-### 🪙 ERC20 Token Trading
-**First marketplace to support ERC20 token trading for NFTs:**
-- Create custom ERC20 tokens
-- Approval system for security
-- Trade NFTs with any approved token
-- Flexible payment options
-- Platform fee collection in tokens
+### **Frontend**
+- **Vanilla JavaScript** - No framework dependencies
+- **Ethers.js** - Ethereum blockchain interaction
+- **HTML5/CSS3** - Modern web standards
+- **IPFS** - Decentralized file storage
 
-### 🏛️ Role-Based Access Control
-**Comprehensive role management system:**
-- **Admin**: Full marketplace control, fee management
-- **Team**: Token approval, listing management
-- **Moderator**: Content moderation, dispute resolution
-- **Approver**: ERC20 token verification
-- **Creator**: NFT and token creation
+### **Development**
+- **Node.js** - Development environment
+- **NPM** - Package management
+- **Git** - Version control
 
-### ⚡ Lazy Minting
-Create NFTs without paying gas fees upfront:
-- Upload metadata and images
-- Set prices and royalties
-- Buyers pay gas when purchasing
-- Perfect for creators with limited funds
+## 📖 Usage Guide
 
-### 📈 Advanced Analytics
-Comprehensive marketplace insights:
-- Volume tracking over time
-- Collection performance metrics
-- User growth analytics
-- Market trend analysis
-- Real-time dashboard updates
+### 🔗 **Connecting Your Wallet**
+1. Install MetaMask or compatible Web3 wallet
+2. Connect to localhost network (Chain ID: 31337)
+3. Import test accounts from Hardhat node
+4. Click "Connect Wallet" in AlsaniaFX
 
-## 🔧 Configuration
+### 🎨 **Creating NFTs**
+1. Navigate to the "Create" section
+2. Choose your token type (ERC721, ERC1155, Lazy, ERC20)
+3. Upload image and fill metadata
+4. Set price and royalty percentage
+5. Confirm transaction in wallet
 
-### Environment Variables
+### 🛒 **Trading NFTs**
+1. Browse marketplace or use search/filters
+2. Click on NFT to view details
+3. Click "Buy Now" or "Place Bid"
+4. Confirm transaction and gas fees
+5. NFT transfers to your wallet
+
+### 👑 **Admin Functions**
+1. Access admin panel at `/admin.html`
+2. Only Admin/Team roles can access
+3. Manage platform fees (1-10%)
+4. Grant/revoke user roles
+5. Approve ERC20 tokens for trading
+
+## 🔧 Development
+
+### **Local Development**
 ```bash
-# Blockchain Configuration
-NETWORK_URL=https://polygon-rpc.com
-PRIVATE_KEY=your_private_key
-CONTRACT_ADDRESSES=deployed_contract_addresses
+# Install dependencies
+npm install --legacy-peer-deps
 
-# IPFS Configuration
-IPFS_GATEWAY=https://ipfs.io/ipfs/
-IPFS_API_KEY=your_ipfs_api_key
+# Compile contracts
+npx hardhat compile
 
-# Analytics
-ANALYTICS_KEY=your_analytics_key
+# Run tests
+npx hardhat test
+
+# Start local node
+npx hardhat node
+
+# Deploy locally
+npx hardhat run scripts/deploy.js --network localhost
+
+# Start frontend
+cd fx-front && python3 -m http.server 8080
 ```
 
-### Contract Addresses
-After deployment, update `fx-front/js/config.js`:
-```javascript
-const CONFIG = {
-    contracts: {
-        nftFactory: "0x...",
-        erc20Factory: "0x...",
-        lazyMinting: "0x...",
-        marketplace: "0x..."
-    },
-    network: "polygon",
-    ipfsGateway: "https://ipfs.io/ipfs/"
-};
-```
-
-## 🧪 Testing
-
-### Smart Contract Tests
+### **Testing**
 ```bash
 # Run all tests
 npm test
@@ -228,167 +203,96 @@ npm test
 # Run specific test file
 npx hardhat test test/AlsaniaFX.test.js
 
-# Run with coverage
-npx hardhat coverage
+# Generate coverage report
+npm run coverage
+
+# Check contract size
+npm run size
 ```
 
-### Frontend Tests
+### **Deployment**
 ```bash
-# Run security audit
-node scripts/security-audit.js
+# Deploy to testnet
+npm run deploy:mumbai
 
-# Check deployment status
-node scripts/status.js
+# Deploy to mainnet
+npm run deploy:polygon
+
+# Verify contracts
+npm run verify
 ```
 
-## 🚀 Deployment
+## 🛡️ Security
 
-### Local Development
-```bash
-# Deploy to local network
-npx hardhat run scripts/deploy.js --network localhost
-```
+### **Smart Contract Security**
+- **OpenZeppelin Libraries** - Battle-tested, audited contracts
+- **Reentrancy Protection** - ReentrancyGuard on all payable functions
+- **Access Control** - Role-based permissions with AccessControl
+- **Pausable Contracts** - Emergency stop functionality
+- **Upgradeable Pattern** - UUPS proxy for future improvements
 
-### Testnet Deployment
-```bash
-# Deploy to Polygon Mumbai
-npx hardhat run scripts/deploy.js --network mumbai
-```
+### **Frontend Security**
+- **Input Validation** - All user inputs sanitized and validated
+- **XSS Protection** - Content Security Policy headers
+- **Wallet Security** - Secure Web3 provider integration
+- **HTTPS Only** - All production deployments use HTTPS
 
-### Mainnet Deployment
-```bash
-# Deploy to Polygon Mainnet
-npx hardhat run scripts/deploy.js --network polygon
-```
+### **Best Practices**
+- **Gas Optimization** - Efficient contract design
+- **Error Handling** - Comprehensive error messages
+- **Event Logging** - Complete audit trail
+- **Testing Coverage** - Extensive test suite
 
-## 📚 API Reference
+## 📊 Analytics
 
-### Smart Contract Functions
+AlsaniaFX includes comprehensive analytics:
 
-#### ERC20Factory
-```solidity
-// Create a new ERC20 token
-function createToken(
-    string memory name,
-    string memory symbol,
-    uint256 initialSupply,
-    uint8 decimals
-) public returns (address)
-
-// Approve token for marketplace
-function approveToken(address tokenAddress) public
-
-// List token for trading
-function listToken(address tokenAddress) public
-
-// Set platform fee (1-10%)
-function setPlatformFee(uint256 newFeeBps) public
-```
-
-#### AlsaniaFX Marketplace
-```solidity
-// Buy NFT with ERC20 tokens
-function buyWithERC20(
-    uint256 listingId,
-    address erc20Token,
-    uint256 amount
-) external
-
-// Approve ERC20 token for trading
-function approveERC20Token(address tokenAddress, bool approved) public
-
-// Role management
-function grantRole(bytes32 role, address account) public
-function revokeRole(bytes32 role, address account) public
-```
-
-### Frontend API
-
-#### ERC20 Management
-```javascript
-// Create ERC20 token
-await app.erc20Manager.createToken(name, symbol, supply, decimals);
-
-// Approve token
-await app.erc20Manager.approveToken(tokenAddress);
-
-// Buy NFT with ERC20
-await app.erc20Manager.buyNFTWithERC20(listingId, tokenAddress, amount);
-```
-
-#### Role Management
-```javascript
-// Grant role
-await app.marketplace.grantRole(role, account);
-
-// Check role
-await app.marketplace.hasRole(role, account);
-```
+- **Trading Volume** - Real-time volume tracking
+- **User Activity** - Active users and engagement metrics
+- **Collection Performance** - Top collections and trends
+- **Revenue Tracking** - Platform fees and earnings
+- **Gas Usage** - Transaction cost optimization
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+We welcome contributions to AlsaniaFX! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-### Development Guidelines
-- Follow Solidity best practices
-- Write comprehensive tests
-- Update documentation
-- Use conventional commits
-- Maintain code quality standards
+### **Development Workflow**
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
+
+### **Code Standards**
+- **Solidity**: Follow OpenZeppelin patterns
+- **JavaScript**: ES6+ with clear documentation
+- **CSS**: BEM methodology with CSS variables
+- **Git**: Conventional commit messages
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🌟 About Alsania
 
-- OpenZeppelin for secure smart contract libraries
-- Hardhat for development environment
-- IPFS for decentralized storage
-- MetaMask for wallet integration
-- Font Awesome for icons
-- Google Fonts for typography
+AlsaniaFX is part of the **Alsania ecosystem** - a vision of true digital sovereignty where users control their data, assets, and digital identity. Built with the principles of:
+
+- **Decentralization** - No single point of failure
+- **Transparency** - Open source and auditable
+- **User Sovereignty** - You own your assets
+- **Innovation** - Pushing the boundaries of what's possible
 
 ## 📞 Support
 
-- **Documentation**: [docs/](docs/)
-- **Issues**: [GitHub Issues](https://github.com/your-username/alsaniafx/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-username/alsaniafx/discussions)
-- **Email**: support@alsaniafx.com
-
-## 🗺️ Roadmap
-
-### Phase 1 (Current) ✅
-- [x] ERC721 NFT support
-- [x] ERC20 token trading
-- [x] Metadata editing
-- [x] Lazy minting
-- [x] Role-based system
-- [x] Advanced search
-- [x] Analytics dashboard
-- [x] IPFS integration
-
-### Phase 2 (Next) 🚧
-- [ ] ERC1155 support
-- [ ] Multi-chain deployment
-- [ ] Mobile app
-- [ ] Social features
-- [ ] Governance system
-
-### Phase 3 (Future) 📋
-- [ ] Cross-chain bridges
-- [ ] Gaming integration
-- [ ] Staking features
-- [ ] DAO governance
-- [ ] Advanced DeFi features
+- **Documentation**: [docs.alsania.com](https://docs.alsania.com)
+- **Discord**: [discord.gg/alsania](https://discord.gg/alsania)
+- **Twitter**: [@AlsaniaFX](https://twitter.com/AlsaniaFX)
+- **Email**: support@alsania.com
 
 ---
 
-**Built with ❤️ by the AlsaniaFX Team**
+**🚀 Built with ❤️ by the Alsania team**
 
-*Empowering creators in the digital economy*
-
+*"The future is sovereign, the future is Alsania"*

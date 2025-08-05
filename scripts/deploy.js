@@ -12,7 +12,7 @@ async function main() {
     // Deploy ERC20Factory
     console.log("🏭 Deploying ERC20Factory...");
     const ERC20Factory = await ethers.getContractFactory("ERC20Factory");
-    const erc20Factory = await upgrades.deployProxy(ERC20Factory, [deployer.address]);
+    const erc20Factory = await upgrades.deployProxy(ERC20Factory, []);
     await erc20Factory.waitForDeployment();
     const erc20FactoryAddress = await erc20Factory.getAddress();
     console.log("✅ ERC20Factory deployed to:", erc20FactoryAddress);
@@ -37,9 +37,7 @@ async function main() {
     console.log("🏪 Deploying AlsaniaFX Marketplace...");
     const AlsaniaFX = await ethers.getContractFactory("AlsaniaFX");
     const marketplace = await upgrades.deployProxy(AlsaniaFX, [
-        deployer.address,
-        erc20FactoryAddress,
-        erc1155FactoryAddress
+        deployer.address
     ]);
     await marketplace.waitForDeployment();
     const marketplaceAddress = await marketplace.getAddress();
