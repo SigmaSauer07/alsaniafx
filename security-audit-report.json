@@ -1,0 +1,84 @@
+{
+  "timestamp": "2025-07-31T14:35:23.643Z",
+  "summary": {
+    "critical": 2,
+    "high": 4,
+    "medium": 2,
+    "low": 2
+  },
+  "vulnerabilities": [
+    {
+      "severity": "CRITICAL",
+      "file": "hardhat.config.js",
+      "issue": "Private Keys in Config",
+      "description": "Private keys should never be in configuration files",
+      "timestamp": "2025-07-31T14:35:23.640Z"
+    },
+    {
+      "severity": "HIGH",
+      "file": "hardhat.config.js",
+      "issue": "API Keys in Config",
+      "description": "API keys should be in environment variables",
+      "timestamp": "2025-07-31T14:35:23.640Z"
+    },
+    {
+      "severity": "CRITICAL",
+      "file": ".env.example",
+      "issue": "Private Keys in Config",
+      "description": "Private keys should never be in configuration files",
+      "timestamp": "2025-07-31T14:35:23.640Z"
+    },
+    {
+      "severity": "HIGH",
+      "file": ".env.example",
+      "issue": "API Keys in Config",
+      "description": "API keys should be in environment variables",
+      "timestamp": "2025-07-31T14:35:23.640Z"
+    },
+    {
+      "severity": "HIGH",
+      "file": "scripts/deploy.js",
+      "issue": "Safety Checks",
+      "description": "Missing: Deployment should include safety checks",
+      "timestamp": "2025-07-31T14:35:23.640Z"
+    },
+    {
+      "severity": "HIGH",
+      "file": "scripts/deploy-production.js",
+      "issue": "Safety Checks",
+      "description": "Missing: Deployment should include safety checks",
+      "timestamp": "2025-07-31T14:35:23.640Z"
+    }
+  ],
+  "warnings": [
+    {
+      "severity": "LOW",
+      "file": "contracts/AlsaniaFX.sol",
+      "issue": "Safe Math",
+      "description": "Missing: SafeMath is not needed in Solidity 0.8+ but good to verify",
+      "timestamp": "2025-07-31T14:35:23.639Z"
+    },
+    {
+      "severity": "LOW",
+      "file": "contracts/NFTFactoryUpgradeable.sol",
+      "issue": "Safe Math",
+      "description": "Missing: SafeMath is not needed in Solidity 0.8+ but good to verify",
+      "timestamp": "2025-07-31T14:35:23.639Z"
+    },
+    {
+      "severity": "MEDIUM",
+      "file": "hardhat.config.js",
+      "issue": "Network Configuration",
+      "description": "Network configuration should be properly set",
+      "timestamp": "2025-07-31T14:35:23.640Z"
+    },
+    {
+      "severity": "MEDIUM",
+      "file": "scripts/deploy.js",
+      "issue": "Environment Validation",
+      "description": "Missing: Environment variables should be validated",
+      "timestamp": "2025-07-31T14:35:23.640Z"
+    }
+  ],
+  "recommendations": []
+}

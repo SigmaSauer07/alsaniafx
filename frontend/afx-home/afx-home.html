@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlsaniaFX - NFT Marketplace</title>
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="assets/icons/logo.png" alt="AlsaniaFX" class="nav-logo">
+                <span class="nav-title">AlsaniaFX</span>
+            </div>
+            <div class="nav-actions">
+                <button id="connect-wallet" class="btn btn-primary">
+                    <i class="fas fa-wallet"></i>
+                    Connect Wallet
+                </button>
+                <div id="wallet-info" class="wallet-info" style="display: none;">
+                    <span id="wallet-address"></span>
+                    <button id="disconnect-wallet" class="btn btn-secondary">Disconnect</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Discover, Create & Trade NFTs</h1>
+                <p class="hero-subtitle">The premier NFT marketplace on Polygon. Create, collect, and trade unique digital assets.</p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary btn-large" onclick="app.navigateToSection('marketplace')">
+                        <i class="fas fa-store"></i>
+                        Explore Marketplace
+                    </button>
+                    <button class="btn btn-secondary btn-large" onclick="app.navigateToSection('create')">
+                        <i class="fas fa-plus"></i>
+                        Create NFT
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="nft-showcase">
+                    <img src="assets/images/example1.png" alt="Featured NFT" class="featured-nft">
+                    <img src="assets/images/example2.png" alt="Featured NFT" class="featured-nft">
+                    <img src="assets/images/example3.png" alt="Featured NFT" class="featured-nft">
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabbed Interface -->
+        <section class="tabbed-interface">
+            <div class="container">
+                <!-- Tab Navigation -->
+                <div class="tab-navigation">
+                    <button class="tab-button active" data-tab="marketplace">
+                        <i class="fas fa-store"></i>
+                        <span>Marketplace</span>
+                    </button>
+                    <button class="tab-button" data-tab="create">
+                        <i class="fas fa-plus"></i>
+                        <span>Create</span>
+                    </button>
+                    <button class="tab-button" data-tab="collections">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Collections</span>
+                    </button>
+                    <button class="tab-button" data-tab="lazy-minting">
+                        <i class="fas fa-magic"></i>
+                        <span>Lazy Mint</span>
+                    </button>
+                    <button class="tab-button" data-tab="erc20-tokens">
+                        <i class="fas fa-coins"></i>
+                        <span>ERC20 Tokens</span>
+                    </button>
+                    <button class="tab-button" data-tab="erc1155-tokens">
+                        <i class="fas fa-cubes"></i>
+                        <span>ERC-1155</span>
+                    </button>
+                    <button class="tab-button" data-tab="analytics">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </button>
+                    <button class="tab-button" data-tab="profile">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Marketplace Tab -->
+                    <div id="marketplace-tab" class="tab-panel active">
+                        <div class="section-header">
+                            <h2 class="section-title">Marketplace</h2>
+                            <p class="section-subtitle">Discover unique NFTs from talented creators</p>
+                        </div>
+                        
+                        <!-- Filters -->
+                        <div class="filters">
+                            <div class="filter-group">
+                                <input type="text" id="search-nfts" placeholder="Search NFTs..." class="search-input">
+                                <select id="sort-nfts" class="select-input">
+                                    <option value="latest">Latest</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="popular">Most Popular</option>
+                                </select>
+                            </div>
+                            <div class="filter-tabs">
+                                <button class="filter-tab active" data-filter="all">All</button>
+                                <button class="filter-tab" data-filter="art">Art</button>
+                                <button class="filter-tab" data-filter="gaming">Gaming</button>
+                                <button class="filter-tab" data-filter="music">Music</button>
+                                <button class="filter-tab" data-filter="photography">Photography</button>
+                            </div>
+                        </div>
+
+                        <!-- NFT Grid -->
+                        <div id="nft-grid" class="nft-grid">
+                            <!-- NFTs will be loaded here -->
+                        </div>
+
+                        <!-- Load More Button -->
+                        <div class="load-more-container">
+                            <button id="load-more-nfts" class="btn btn-secondary">
+                                <i class="fas fa-plus"></i>
+                                Load More NFTs
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Create Tab -->
+                    <div id="create-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">Create NFT</h2>
+                            <p class="section-subtitle">Mint your unique digital assets</p>
+                        </div>
+                        
+                        <div class="create-content">
+                            <div class="create-form">
+                                <div class="form-group">
+                                    <label for="nft-name">NFT Name</label>
+                                    <input type="text" id="nft-name" class="form-input" placeholder="Enter NFT name">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="nft-description">Description</label>
+                                    <textarea id="nft-description" class="form-textarea" placeholder="Describe your NFT"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="nft-price">Price (MATIC)</label>
+                                    <input type="number" id="nft-price" class="form-input" placeholder="0.0" step="0.01" min="0">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="nft-category">Category</label>
+                                    <select id="nft-category" class="form-input">
+                                        <option value="art">Art</option>
+                                        <option value="gaming">Gaming</option>
+                                        <option value="music">Music</option>
+                                        <option value="photography">Photography</option>
+                                        <option value="collectibles">Collectibles</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="nft-file">Upload File</label>
+                                    <div class="file-upload">
+                                        <input type="file" id="nft-file" class="file-input" accept="image/*,video/*">
+                                        <div class="file-upload-area">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <p>Drag and drop your file here</p>
+                                            <span>or click to browse</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button id="mint-nft" class="btn btn-primary">
+                                        <i class="fas fa-magic"></i>
+                                        Mint NFT
+                                    </button>
+                                    <button id="reset-form" class="btn btn-secondary">
+                                        <i class="fas fa-undo"></i>
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="create-preview">
+                                <h3>Preview</h3>
+                                <div class="preview-card">
+                                    <div class="preview-image">
+                                        <img id="preview-img" src="assets/images/example1.png" alt="Preview">
+                                    </div>
+                                    <div class="preview-info">
+                                        <h3 id="preview-name">NFT Name</h3>
+                                        <p id="preview-description">Description will appear here</p>
+                                        <div class="preview-price">
+                                            <span id="preview-price">0 MATIC</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collections Tab -->
+                    <div id="collections-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">Collections</h2>
+                            <p class="section-subtitle">Explore curated NFT collections</p>
+                        </div>
+                        
+                        <div class="collections-grid" id="collections-grid">
+                            <!-- Collections will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Lazy Minting Tab -->
+                    <div id="lazy-minting-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">Lazy Minting</h2>
+                            <p class="section-subtitle">Create NFTs without upfront gas costs</p>
+                        </div>
+                        
+                        <div class="lazy-minting-content">
+                            <div class="lazy-minting-info">
+                                <h3>How Lazy Minting Works</h3>
+                                <p>Create NFTs without paying gas fees upfront. Gas fees are only paid when someone purchases your NFT.</p>
+                            </div>
+                            
+                            <div class="lazy-minting-form">
+                                <div class="form-group">
+                                    <label for="lazy-nft-name">NFT Name</label>
+                                    <input type="text" id="lazy-nft-name" class="form-input" placeholder="Enter NFT name">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="lazy-nft-description">Description</label>
+                                    <textarea id="lazy-nft-description" class="form-textarea" placeholder="Describe your NFT"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="lazy-nft-price">Price (MATIC)</label>
+                                    <input type="number" id="lazy-nft-price" class="form-input" placeholder="0.0" step="0.01" min="0">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="lazy-nft-file">Upload File</label>
+                                    <div class="file-upload">
+                                        <input type="file" id="lazy-nft-file" class="file-input" accept="image/*,video/*">
+                                        <div class="file-upload-area">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <p>Drag and drop your file here</p>
+                                            <span>or click to browse</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button id="lazy-mint-nft" class="btn btn-primary">
+                                        <i class="fas fa-magic"></i>
+                                        Create Lazy NFT
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="lazy-nfts-grid" id="lazy-nfts-grid">
+                                <!-- Lazy minted NFTs will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ERC20 Tokens Tab -->
+                    <div id="erc20-tokens-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">ERC20 Tokens</h2>
+                            <p class="section-subtitle">Manage and trade ERC20 tokens</p>
+                        </div>
+                        
+                        <div class="erc20-content">
+                            <div class="token-management">
+                                <h3>Token Management</h3>
+                                <div class="token-form">
+                                    <div class="form-group">
+                                        <label for="token-address">Token Contract Address</label>
+                                        <input type="text" id="token-address" class="form-input" placeholder="0x...">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="token-amount">Amount</label>
+                                        <input type="number" id="token-amount" class="form-input" placeholder="0.0" step="0.01" min="0">
+                                    </div>
+                                    
+                                    <div class="form-actions">
+                                        <button id="approve-token" class="btn btn-primary">
+                                            <i class="fas fa-check"></i>
+                                            Approve Token
+                                        </button>
+                                        <button id="revoke-token" class="btn btn-secondary">
+                                            <i class="fas fa-times"></i>
+                                            Revoke Token
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tokens-grid" id="tokens-grid">
+                                <!-- ERC20 tokens will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ERC1155 Tokens Tab -->
+                    <div id="erc1155-tokens-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">ERC-1155 Tokens</h2>
+                            <p class="section-subtitle">Multi-token standard for gaming and collectibles</p>
+                        </div>
+                        
+                        <div class="erc1155-content">
+                            <div class="erc1155-info">
+                                <h3>ERC-1155 Features</h3>
+                                <ul>
+                                    <li>Multiple token types in a single contract</li>
+                                    <li>Batch transfers for efficiency</li>
+                                    <li>Perfect for gaming assets and collectibles</li>
+                                    <li>Reduced gas costs for multiple operations</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="erc1155-management">
+                                <h3>Token Management</h3>
+                                <div class="form-group">
+                                    <label for="erc1155-contract">Contract Address</label>
+                                    <input type="text" id="erc1155-contract" class="form-input" placeholder="0x...">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="erc1155-token-id">Token ID</label>
+                                    <input type="number" id="erc1155-token-id" class="form-input" placeholder="0" min="0">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="erc1155-amount">Amount</label>
+                                    <input type="number" id="erc1155-amount" class="form-input" placeholder="1" min="1">
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button id="mint-erc1155" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i>
+                                        Mint ERC-1155
+                                    </button>
+                                    <button id="transfer-erc1155" class="btn btn-secondary">
+                                        <i class="fas fa-exchange-alt"></i>
+                                        Transfer
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="erc1155-grid" id="erc1155-grid">
+                                <!-- ERC-1155 tokens will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Tab -->
+                    <div id="analytics-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">Analytics</h2>
+                            <p class="section-subtitle">Market insights and performance metrics</p>
+                        </div>
+                        
+                        <div class="analytics-content">
+                            <div class="analytics-filters">
+                                <select id="analytics-period" class="form-input">
+                                    <option value="24h">Last 24 Hours</option>
+                                    <option value="7d">Last 7 Days</option>
+                                    <option value="30d">Last 30 Days</option>
+                                    <option value="90d">Last 90 Days</option>
+                                </select>
+                            </div>
+                            
+                            <div class="analytics-grid">
+                                <div class="analytics-card">
+                                    <div class="analytics-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="analytics-info">
+                                        <h3>Total Volume</h3>
+                                        <p class="analytics-value">1,234.56 MATIC</p>
+                                        <span class="analytics-change positive">+12.5%</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="analytics-card">
+                                    <div class="analytics-icon">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <div class="analytics-info">
+                                        <h3>Total Sales</h3>
+                                        <p class="analytics-value">456</p>
+                                        <span class="analytics-change positive">+8.3%</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="analytics-card">
+                                    <div class="analytics-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="analytics-info">
+                                        <h3>Active Users</h3>
+                                        <p class="analytics-value">1,234</p>
+                                        <span class="analytics-change positive">+15.2%</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="analytics-card">
+                                    <div class="analytics-icon">
+                                        <i class="fas fa-coins"></i>
+                                    </div>
+                                    <div class="analytics-info">
+                                        <h3>Average Price</h3>
+                                        <p class="analytics-value">2.71 MATIC</p>
+                                        <span class="analytics-change negative">-2.1%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="analytics-charts">
+                                <div class="chart-container">
+                                    <h3>Sales Trend</h3>
+                                    <div class="chart-placeholder">
+                                        <i class="fas fa-chart-area"></i>
+                                        <p>Chart will be displayed here</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="chart-container">
+                                    <h3>Top Categories</h3>
+                                    <div class="chart-placeholder">
+                                        <i class="fas fa-chart-pie"></i>
+                                        <p>Chart will be displayed here</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Tab -->
+                    <div id="profile-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">Profile</h2>
+                            <p class="section-subtitle">Manage your account and view your NFTs</p>
+                        </div>
+                        
+                        <div class="profile-content">
+                            <div class="profile-header">
+                                <div class="profile-info">
+                                    <div class="profile-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="profile-details">
+                                        <h3 id="profile-name">User Profile</h3>
+                                        <p id="profile-address">Connect wallet to view details</p>
+                                        <div class="profile-stats">
+                                            <span><i class="fas fa-coins"></i> 0 MATIC</span>
+                                            <span><i class="fas fa-image"></i> 0 NFTs</span>
+                                            <span><i class="fas fa-heart"></i> 0 Favorites</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="profile-actions">
+                                    <button id="connect-wallet-profile" class="btn btn-primary">
+                                        <i class="fas fa-wallet"></i>
+                                        Connect Wallet
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="profile-tabs">
+                                <button class="profile-tab active" data-profile-tab="owned">
+                                    <i class="fas fa-image"></i>
+                                    <span>Owned</span>
+                                </button>
+                                <button class="profile-tab" data-profile-tab="created">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Created</span>
+                                </button>
+                                <button class="profile-tab" data-profile-tab="favorites">
+                                    <i class="fas fa-heart"></i>
+                                    <span>Favorites</span>
+                                </button>
+                                <button class="profile-tab" data-profile-tab="activity">
+                                    <i class="fas fa-history"></i>
+                                    <span>Activity</span>
+                                </button>
+                            </div>
+                            
+                            <div class="profile-tab-content active" id="owned-content">
+                                <div class="nft-grid" id="owned-nft-grid">
+                                    <!-- Owned NFTs will be loaded here -->
+                                </div>
+                            </div>
+                            
+                            <div class="profile-tab-content" id="created-content">
+                                <div class="nft-grid" id="created-nft-grid">
+                                    <!-- Created NFTs will be loaded here -->
+                                </div>
+                            </div>
+                            
+                            <div class="profile-tab-content" id="favorites-content">
+                                <div class="nft-grid" id="favorites-nft-grid">
+                                    <!-- Favorite NFTs will be loaded here -->
+                                </div>
+                            </div>
+                            
+                            <div class="profile-tab-content" id="activity-content">
+                                <div class="activity-list" id="activity-list">
+                                    <!-- Activity will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- NFT Modal -->
+    <div id="nft-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="app.closeModal()">&times;</span>
+            <div class="modal-body">
+                <div class="nft-details" id="nft-details">
+                    <!-- NFT details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="assets/icons/logo.png" alt="AlsaniaFX" class="footer-logo">
+                    <h3 class="footer-title">AlsaniaFX</h3>
+                </div>
+                <div class="footer-links">
+                    <a href="#about">About</a>
+                    <a href="#terms">Terms</a>
+                    <a href="#privacy">Privacy</a>
+                    <a href="#support">Support</a>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AlsaniaFX. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/web3.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/marketplace.js"></script>
+    <script src="js/nft.js"></script>
+    <script src="js/collections.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/lazy-minting.js"></script>
+    <script src="js/erc20-manager.js"></script>
+    <script src="js/erc1155-manager.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/analytics-dashboard.js"></script>
+    <script src="js/advanced-search.js"></script>
+    <script src="js/advanced-ui.js"></script>
+    <script src="js/performance.js"></script>
+    <script src="js/ipfs-integration.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Initialize the application
+        let app;
+        document.addEventListener('DOMContentLoaded', function() {
+            app = new AlsaniaFXApp();
+        });
+    </script>
+</body>
+</html>

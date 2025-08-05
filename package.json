@@ -1,29 +1,83 @@
 {
   "name": "alsaniafx",
   "version": "1.0.0",
-  "description": "Alsanias NFT Marketplace",
+  "description": "AlsaniaFX NFT Marketplace - The Future of NFT Trading",
   "main": "hardhat.config.js",
   "directories": {
     "doc": "docs",
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "hardhat test",
     "compile": "hardhat compile",
     "deploy": "hardhat run scripts/deploy.js --network amoy",
-    "upgrade": "hardhat run scripts/upgrade.js --network amoy"
+    "deploy:upgradeable": "hardhat run scripts/deploy-upgradeable.js --network amoy",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "node": "hardhat node",
+    "clean": "hardhat clean",
+    "verify": "hardhat verify",
+    "coverage": "hardhat coverage",
+    "lint": "solhint 'contracts/**/*.sol'",
+    "lint:fix": "solhint 'contracts/**/*.sol' --fix",
+    "size": "hardhat size-contracts",
+    "gas": "REPORT_GAS=true hardhat test",
+    "dev": "hardhat run scripts/dev.js",
+    "frontend:dev": "cd fx-front && python3 -m http.server 8000",
+    "frontend:build": "cd fx-front && npm run build",
+    "subgraph:codegen": "cd subgraph && npm run codegen",
+    "subgraph:build": "cd subgraph && npm run build",
+    "subgraph:deploy": "cd subgraph && npm run deploy",
+    "start": "npm run compile && npm run deploy:local && npm run frontend:dev"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "nft",
+    "marketplace",
+    "blockchain",
+    "ethereum",
+    "polygon",
+    "alsania",
+    "defi",
+    "web3"
+  ],
+  "author": "Alsania Team",
+  "license": "MIT",
   "dependencies": {
-    "@openzeppelin/contracts-upgradeable": "^5.3.0"
+    "@openzeppelin/contracts": "^5.3.0",
+    "@openzeppelin/contracts-upgradeable": "^5.4.0",
+    "@openzeppelin/hardhat-upgrades": "^3.9.0",
+    "ethers": "^6.14.4",
+    "ipfs-http-client": "^60.0.1",
+    "pinata-sdk": "^0.1.0"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.9",
-    "@openzeppelin/hardhat-upgrades": "^3.9.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@typechain/ethers-v6": "^0.4.0",
+    "@typechain/hardhat": "^9.0.0",
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^10.0.0",
     "chai": "^5.2.0",
+    "dotenv": "^16.0.0",
     "ethers": "^6.14.4",
-    "hardhat": "^2.24.3"
-  }
+    "hardhat": "^2.24.3",
+    "hardhat-gas-reporter": "^1.0.0",
+    "solhint": "^4.0.0",
+    "solidity-coverage": "^0.8.0",
+    "typechain": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alsania/alsaniafx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alsania/alsaniafx/issues"
+  },
+  "homepage": "https://alsaniafx.com"
 }

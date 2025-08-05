@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlsaniaFX Admin Control Panel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>AlsaniaFX Admin</h1>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i> Back to Marketplace
+                    </a>
+                    <div class="wallet-info" id="wallet-info">
+                        <span class="wallet-address" id="wallet-address">Not Connected</span>
+                        <button id="connect-wallet-btn" class="btn btn-primary">Connect Wallet</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Admin Status -->
+        <section class="section">
+            <div class="container">
+                <div class="admin-status" id="admin-status">
+                    <div class="status-card">
+                        <i class="fas fa-user-shield"></i>
+                        <h3>Admin Status</h3>
+                        <p id="admin-status-text">Checking permissions...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabbed Interface -->
+        <section class="tabbed-interface">
+            <div class="container">
+                <!-- Tab Navigation -->
+                <div class="tab-navigation">
+                    <button class="tab-button active" data-tab="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </button>
+                    <button class="tab-button" data-tab="role-management">
+                        <i class="fas fa-users-cog"></i>
+                        <span>Role Management</span>
+                    </button>
+                    <button class="tab-button" data-tab="platform-settings">
+                        <i class="fas fa-cogs"></i>
+                        <span>Platform Settings</span>
+                    </button>
+                    <button class="tab-button" data-tab="token-management">
+                        <i class="fas fa-coins"></i>
+                        <span>Token Management</span>
+                    </button>
+                    <button class="tab-button" data-tab="marketplace-controls">
+                        <i class="fas fa-store"></i>
+                        <span>Marketplace Controls</span>
+                    </button>
+                    <button class="tab-button" data-tab="analytics">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </button>
+                    <button class="tab-button" data-tab="security">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Security</span>
+                    </button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Dashboard Tab -->
+                    <div id="dashboard-tab" class="tab-panel active">
+                        <div class="section-header">
+                            <h2 class="section-title">Admin Dashboard</h2>
+                            <p class="section-subtitle">Complete administrative control over the AlsaniaFX marketplace</p>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="quick-actions">
+                            <h3>Quick Actions</h3>
+                            <div class="action-grid">
+                                <button class="action-card" onclick="adminApp.switchTab('role-management')">
+                                    <i class="fas fa-users-cog"></i>
+                                    <h4>Role Management</h4>
+                                    <p>Grant and revoke user roles</p>
+                                </button>
+                                <button class="action-card" onclick="adminApp.switchTab('platform-settings')">
+                                    <i class="fas fa-cogs"></i>
+                                    <h4>Platform Settings</h4>
+                                    <p>Configure fees and settings</p>
+                                </button>
+                                <button class="action-card" onclick="adminApp.switchTab('token-management')">
+                                    <i class="fas fa-coins"></i>
+                                    <h4>Token Management</h4>
+                                    <p>Approve and list ERC20 tokens</p>
+                                </button>
+                                <button class="action-card" onclick="adminApp.switchTab('marketplace-controls')">
+                                    <i class="fas fa-store"></i>
+                                    <h4>Marketplace Controls</h4>
+                                    <p>Manage marketplace operations</p>
+                                </button>
+                                <button class="action-card" onclick="adminApp.switchTab('analytics')">
+                                    <i class="fas fa-chart-line"></i>
+                                    <h4>Analytics</h4>
+                                    <p>View platform statistics</p>
+                                </button>
+                                <button class="action-card" onclick="adminApp.switchTab('security')">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <h4>Security</h4>
+                                    <p>Security and emergency controls</p>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Platform Stats -->
+                        <div class="platform-stats">
+                            <h3>Platform Statistics</h3>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <i class="fas fa-users"></i>
+                                    <h4>Total Users</h4>
+                                    <p class="stat-number">1,234</p>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-image"></i>
+                                    <h4>Total NFTs</h4>
+                                    <p class="stat-number">5,678</p>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-exchange-alt"></i>
+                                    <h4>Total Transactions</h4>
+                                    <p class="stat-number">12,345</p>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-coins"></i>
+                                    <h4>Total Volume</h4>
+                                    <p class="stat-number">1,234.56 MATIC</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Role Management Tab -->
+                    <div id="role-management-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">Role Management</h2>
+                            <p class="section-subtitle">Manage user roles and permissions</p>
+                        </div>
+                        
+                        <div class="admin-grid">
+                            <!-- Grant Roles -->
+                            <div class="admin-card">
+                                <h4><i class="fas fa-user-plus"></i> Grant Role</h4>
+                                <div class="form-group">
+                                    <label for="grant-role-select">Role</label>
+                                    <select id="grant-role-select" class="form-select">
+                                        <option value="admin">Admin</option>
+                                        <option value="moderator">Moderator</option>
+                                        <option value="creator">Creator</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="grant-address">Address</label>
+                                    <input type="text" id="grant-address" class="form-input" placeholder="0x...">
+                                </div>
+                                <button id="grant-role-btn" class="btn btn-primary">
+                                    <i class="fas fa-user-plus"></i> Grant Role
+                                </button>
+                            </div>
+
+                            <!-- Revoke Roles -->
+                            <div class="admin-card">
+                                <h4><i class="fas fa-user-minus"></i> Revoke Role</h4>
+                                <div class="form-group">
+                                    <label for="revoke-role-select">Role</label>
+                                    <select id="revoke-role-select" class="form-select">
+                                        <option value="admin">Admin</option>
+                                        <option value="moderator">Moderator</option>
+                                        <option value="creator">Creator</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="revoke-address">Address</label>
+                                    <input type="text" id="revoke-address" class="form-input" placeholder="0x...">
+                                </div>
+                                <button id="revoke-role-btn" class="btn btn-danger">
+                                    <i class="fas fa-user-minus"></i> Revoke Role
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Platform Settings Tab -->
+                    <div id="platform-settings-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">Platform Settings</h2>
+                            <p class="section-subtitle">Configure platform fees and settings</p>
+                        </div>
+                        
+                        <div class="admin-grid">
+                            <div class="admin-card">
+                                <h4><i class="fas fa-percentage"></i> Platform Fee</h4>
+                                <div class="setting-display">
+                                    <label>Current Fee:</label>
+                                    <span id="current-fee">2.5%</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="new-fee">New Fee (%)</label>
+                                    <input type="number" id="new-fee" class="form-input" min="0" max="10" step="0.1">
+                                </div>
+                                <button id="set-fee-btn" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Update Fee
+                                </button>
+                            </div>
+
+                            <div class="admin-card">
+                                <h4><i class="fas fa-wallet"></i> Fee Recipient</h4>
+                                <div class="setting-display">
+                                    <label>Current Recipient:</label>
+                                    <span id="current-recipient">0x1234...5678</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="new-recipient">New Recipient</label>
+                                    <input type="text" id="new-recipient" class="form-input" placeholder="0x...">
+                                </div>
+                                <button id="set-recipient-btn" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Update Recipient
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Token Management Tab -->
+                    <div id="token-management-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">Token Management</h2>
+                            <p class="section-subtitle">Approve and manage ERC20 tokens</p>
+                        </div>
+                        
+                        <div class="admin-grid">
+                            <div class="admin-card">
+                                <h4><i class="fas fa-check-circle"></i> Approve Token</h4>
+                                <div class="form-group">
+                                    <label for="approve-token-address">Token Address</label>
+                                    <input type="text" id="approve-token-address" class="form-input" placeholder="0x...">
+                                </div>
+                                <button id="approve-token-btn" class="btn btn-success">
+                                    <i class="fas fa-check"></i> Approve Token
+                                </button>
+                            </div>
+
+                            <div class="admin-card">
+                                <h4><i class="fas fa-times-circle"></i> Revoke Token</h4>
+                                <div class="form-group">
+                                    <label for="revoke-token-address">Token Address</label>
+                                    <input type="text" id="revoke-token-address" class="form-input" placeholder="0x...">
+                                </div>
+                                <button id="revoke-token-btn" class="btn btn-danger">
+                                    <i class="fas fa-times"></i> Revoke Token
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Marketplace Controls Tab -->
+                    <div id="marketplace-controls-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">Marketplace Controls</h2>
+                            <p class="section-subtitle">Manage marketplace operations</p>
+                        </div>
+                        
+                        <div class="admin-grid">
+                            <div class="admin-card">
+                                <h4><i class="fas fa-pause"></i> Pause Marketplace</h4>
+                                <p>Pause all marketplace operations</p>
+                                <button id="pause-marketplace-btn" class="btn btn-warning">
+                                    <i class="fas fa-pause"></i> Pause Marketplace
+                                </button>
+                            </div>
+
+                            <div class="admin-card">
+                                <h4><i class="fas fa-play"></i> Resume Marketplace</h4>
+                                <p>Resume marketplace operations</p>
+                                <button id="resume-marketplace-btn" class="btn btn-success">
+                                    <i class="fas fa-play"></i> Resume Marketplace
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Tab -->
+                    <div id="analytics-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">Analytics</h2>
+                            <p class="section-subtitle">Platform analytics and insights</p>
+                        </div>
+                        
+                        <div class="analytics-grid">
+                            <div class="analytics-card">
+                                <h4>User Growth</h4>
+                                <div class="metric">
+                                    <span class="metric-value">+15%</span>
+                                    <span class="metric-label">This Month</span>
+                                </div>
+                            </div>
+                            <div class="analytics-card">
+                                <h4>Transaction Volume</h4>
+                                <div class="metric">
+                                    <span class="metric-value">+23%</span>
+                                    <span class="metric-label">This Month</span>
+                                </div>
+                            </div>
+                            <div class="analytics-card">
+                                <h4>NFT Sales</h4>
+                                <div class="metric">
+                                    <span class="metric-value">+8%</span>
+                                    <span class="metric-label">This Month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Tab -->
+                    <div id="security-tab" class="tab-panel">
+                        <div class="section-header">
+                            <h2 class="section-title">Security</h2>
+                            <p class="section-subtitle">Security and emergency controls</p>
+                        </div>
+                        
+                        <div class="admin-grid">
+                            <div class="admin-card">
+                                <h4><i class="fas fa-shield-alt"></i> Security Status</h4>
+                                <div class="security-status">
+                                    <p>All systems operational</p>
+                                    <span class="status-indicator success"></span>
+                                </div>
+                            </div>
+
+                            <div class="admin-card">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Emergency Stop</h4>
+                                <p>Immediately halt all operations</p>
+                                <button id="emergency-stop-btn" class="btn btn-danger">
+                                    <i class="fas fa-stop"></i> Emergency Stop
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/web3.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/role-manager.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        // Initialize the admin application
+        let adminApp;
+        document.addEventListener('DOMContentLoaded', function() {
+            adminApp = new AdminApp();
+        });
+    </script>
+</body>
+</html> 

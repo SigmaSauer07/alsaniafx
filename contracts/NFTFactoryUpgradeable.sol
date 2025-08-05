@@ -1,19 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
-import "@openzeppelin/contracts/interfaces/IERC2981.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 contract NFTFactoryUpgradeable is
     Initializable,
+    ERC721Upgradeable,
     ERC721URIStorageUpgradeable,
     OwnableUpgradeable,
-    UUPSUpgradeable,
-    IERC2981
+    ReentrancyGuardUpgradeable,
+    PausableUpgradeable,
+    UUPSUpgradeable
 {
     struct Collection {
         uint256 id;
@@ -25,23 +29,50 @@ contract NFTFactoryUpgradeable is
         address creator;
         address royaltyRecipient;
         uint16 royaltyBps;
+        uint256 maxSupply;
+        uint256 totalMinted;
+        bool isPublic;
+        uint256 mintPrice;
+        bool isPaused;
+        bool isVerified;
+        uint256 createdAt;
+        uint256 totalVolume;
     }
 
     struct NFT {
         uint256 collectionId;
-        uint256 tokenId;
-        string metadataURI;
-        uint256 supply;
+        string metadata;
+        address creator;
+        uint256 createdAt;
+        string attributes;
     }
 
-    uint256 private _collectionCounter;
-    mapping(uint256 => uint256) private _tokenCounters;
+    struct MetadataChange {
+        uint256 tokenId;
+        string newMetadata;
+        uint256 updatedAt;
+        address updatedBy;
+    }
+
     mapping(uint256 => Collection) public collections;
     mapping(uint256 => NFT) public nfts;
-    mapping(uint256 => uint256[]) public collectionNFTs;
+    mapping(uint256 => mapping(address => bool)) public hasMinted;
+    mapping(uint256 => uint256) public collectionMintPrices;
+    mapping(uint256 => MetadataChange[]) public metadataUpdates;
+    mapping(address => bool) public verifiedCreators;
+    mapping(uint256 => bool) public verifiedCollections;
 
-    mapping(uint256 => mapping(address => uint256)) private _balances1155;
-    mapping(address => mapping(address => bool)) private _operatorApprovals1155;
+    uint256 public collectionCounter;
+    uint256 public nftCounter;
+
+    event CollectionCreated(uint256 indexed id, string name, address indexed creator);
+    event NFTMinted(uint256 indexed collectionId, uint256 indexed tokenId, address indexed recipient);
+    event CollectionUpdated(uint256 indexed id, string name);
+    event MintPriceSet(uint256 indexed collectionId, uint256 price);
+    event PublicMintToggled(uint256 indexed collectionId, bool isPublic);
+    event MetadataUpdated(uint256 indexed tokenId, string newMetadata, address indexed updatedBy);
+    event CreatorVerified(address indexed creator, bool verified);
+    event CollectionVerified(uint256 indexed collectionId, bool verified);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -49,125 +80,276 @@ contract NFTFactoryUpgradeable is
     }
 
     function initialize() public initializer {
+        __ERC721_init("AlsaniaFX NFT Factory", "ANF");
         __ERC721URIStorage_init();
         __Ownable_init(msg.sender);
-        __UUPSUpgradeable_init(); // ✅ OpenZeppelin v5+ added this again
-        __ERC721_init("NFTFactory", "NFTF");
+        __ReentrancyGuard_init();
+        __Pausable_init();
+        __UUPSUpgradeable_init();
     }
 
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        override
-        onlyOwner
-    {}
-
-    // ====== COLLECTION CREATION ======
     function createCollection(
         string memory name,
         string memory symbol,
-        string memory _contractURI,
-        string memory _baseURI,
+        string memory contractURI,
+        string memory baseURI,
         bool isERC721,
-        address royaltyRecipient,
-        uint16 royaltyBps
+        address creator,
+        uint16 royaltyBps,
+        uint256 maxSupply,
+        uint256 mintPrice
     ) public returns (uint256) {
-        require(royaltyBps <= 1000, "Max 10% royalty");
+        require(bytes(name).length > 0, "Name cannot be empty");
+        require(royaltyBps <= 1000, "Royalty cannot exceed 10%");
+        require(maxSupply > 0, "Max supply must be greater than 0");
 
-        uint256 newId = _collectionCounter++;
-        collections[newId] = Collection({
-            id: newId,
+        uint256 collectionId = collectionCounter++;
+        
+        collections[collectionId] = Collection({
+            id: collectionId,
             name: name,
             symbol: symbol,
-            contractURI: _contractURI,
-            baseURI: _baseURI,
+            contractURI: contractURI,
+            baseURI: baseURI,
             isERC721: isERC721,
-            creator: msg.sender,
-            royaltyRecipient: royaltyRecipient,
-            royaltyBps: royaltyBps
+            creator: creator,
+            royaltyRecipient: creator,
+            royaltyBps: royaltyBps,
+            maxSupply: maxSupply,
+            totalMinted: 0,
+            isPublic: false,
+            mintPrice: mintPrice,
+            isPaused: false,
+            isVerified: false,
+            createdAt: block.timestamp,
+            totalVolume: 0
         });
 
-        return newId;
+        emit CollectionCreated(collectionId, name, creator);
+        return collectionId;
     }
 
-    // ====== MINTING ======
     function mintNFT(
         uint256 collectionId,
         string memory metadata,
         uint256 amount,
-        address recipient
-    ) public {
-        Collection memory collection = collections[collectionId];
-        require(collection.creator == msg.sender, "Not collection owner");
+        address recipient,
+        string memory attributes
+    ) public payable whenNotPaused nonReentrant {
+        Collection storage collection = collections[collectionId];
+        require(collection.creator == msg.sender || collection.isPublic, "Not authorized");
+        require(!collection.isPaused, "Collection paused");
+        require(collection.totalMinted + amount <= collection.maxSupply, "Exceeds max supply");
 
-        uint256 newTokenId = (collectionId << 128) | _tokenCounters[collectionId]++;
-        nfts[newTokenId] = NFT({
-            collectionId: collectionId,
-            tokenId: newTokenId,
-            metadataURI: metadata,
-            supply: amount
-        });
+        if (collection.isPublic && collection.mintPrice > 0) {
+            require(msg.value >= collection.mintPrice * amount, "Insufficient payment");
+        }
 
-        collectionNFTs[collectionId].push(newTokenId);
+        for (uint256 i = 0; i < amount; i++) {
+            uint256 tokenId = nftCounter++;
+            
+            _safeMint(recipient, tokenId);
+            _setTokenURI(tokenId, metadata);
 
-        if (collection.isERC721) {
-            require(amount == 1, "ERC721 requires 1");
-            _safeMint(recipient, newTokenId);
-            _setTokenURI(newTokenId, metadata);
-        } else {
-            _mint1155(recipient, newTokenId, amount);
+            nfts[tokenId] = NFT({
+                collectionId: collectionId,
+                metadata: metadata,
+                creator: msg.sender,
+                createdAt: block.timestamp,
+                attributes: attributes
+            });
+
+            collection.totalMinted++;
+            emit NFTMinted(collectionId, tokenId, recipient);
         }
     }
 
-    function _mint1155(address to, uint256 id, uint256 amount) internal {
-        require(to != address(0), "ERC1155: zero address");
-        _balances1155[id][to] += amount;
-        emit ERC1155TransferSingle(msg.sender, address(0), to, id, amount);
+    function batchMintNFT(
+        uint256 collectionId,
+        string[] memory metadataArray,
+        address[] memory recipients,
+        string[] memory attributesArray
+    ) public whenNotPaused nonReentrant {
+        require(metadataArray.length == recipients.length, "Arrays length mismatch");
+        require(metadataArray.length == attributesArray.length, "Arrays length mismatch");
+
+        Collection storage collection = collections[collectionId];
+        require(collection.creator == msg.sender, "Not authorized");
+        require(!collection.isPaused, "Collection paused");
+        require(collection.totalMinted + metadataArray.length <= collection.maxSupply, "Exceeds max supply");
+
+        for (uint256 i = 0; i < metadataArray.length; i++) {
+            uint256 tokenId = nftCounter++;
+            
+            _safeMint(recipients[i], tokenId);
+            _setTokenURI(tokenId, metadataArray[i]);
+
+            nfts[tokenId] = NFT({
+                collectionId: collectionId,
+                metadata: metadataArray[i],
+                creator: msg.sender,
+                createdAt: block.timestamp,
+                attributes: attributesArray[i]
+            });
+
+            collection.totalMinted++;
+            emit NFTMinted(collectionId, tokenId, recipients[i]);
+        }
     }
 
-    // ====== ERC1155 CUSTOM EVENTS ======
-    event ERC1155TransferSingle(address indexed operator, address indexed from, address indexed to, uint256 id, uint256 value);
-    event ERC1155ApprovalForAll(address indexed account, address indexed operator, bool approved);
+    function updateMetadata(uint256 tokenId, string memory newMetadata) public {
+        NFT storage nft = nfts[tokenId];
+        require(nft.creator == msg.sender, "Not authorized");
+        
+        nft.metadata = newMetadata;
+        _setTokenURI(tokenId, newMetadata);
 
-    // ====== UTILS ======
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721URIStorageUpgradeable)
-        returns (string memory)
-    {
-        NFT memory nft = nfts[tokenId];
-        Collection memory collection = collections[nft.collectionId];
-        return string(abi.encodePacked(collection.baseURI, nft.metadataURI));
+        metadataUpdates[tokenId].push(MetadataChange({
+            tokenId: tokenId,
+            newMetadata: newMetadata,
+            updatedAt: block.timestamp,
+            updatedBy: msg.sender
+        }));
+
+        emit MetadataUpdated(tokenId, newMetadata, msg.sender);
     }
 
-    function royaltyInfo(uint256 tokenId, uint256 salePrice)
-        external
-        view
-        override
-        returns (address, uint256)
-    {
-        Collection memory c = collections[nfts[tokenId].collectionId];
-        uint256 royaltyAmount = (salePrice * c.royaltyBps) / 10000;
-        return (c.royaltyRecipient, royaltyAmount);
+    function updateCollection(
+        uint256 collectionId,
+        string memory name,
+        string memory symbol,
+        string memory contractURI,
+        string memory baseURI
+    ) public {
+        Collection storage collection = collections[collectionId];
+        require(collection.creator == msg.sender, "Not authorized");
+        
+        collection.name = name;
+        collection.symbol = symbol;
+        collection.contractURI = contractURI;
+        collection.baseURI = baseURI;
+        
+        emit CollectionUpdated(collectionId, name);
     }
 
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(ERC721URIStorageUpgradeable, IERC165)
-        returns (bool)
-    {
-        return
-            interfaceId == type(IERC2981).interfaceId ||
-            super.supportsInterface(interfaceId);
+    function setMintPrice(uint256 collectionId, uint256 price) public {
+        Collection storage collection = collections[collectionId];
+        require(collection.creator == msg.sender, "Not authorized");
+        
+        collection.mintPrice = price;
+        emit MintPriceSet(collectionId, price);
     }
 
-    function balanceOf1155(address account, uint256 id) public view returns (uint256) {
-        return _balances1155[id][account];
+    function togglePublicMint(uint256 collectionId) public {
+        Collection storage collection = collections[collectionId];
+        require(collection.creator == msg.sender, "Not authorized");
+        
+        collection.isPublic = !collection.isPublic;
+        emit PublicMintToggled(collectionId, collection.isPublic);
     }
 
-    function setApprovalForAll1155(address operator, bool approved) public {
-        _operatorApprovals1155[msg.sender][operator] = approved;
-        emit ERC1155ApprovalForAll(msg.sender, operator, approved);
+    function pauseCollection(uint256 collectionId) public {
+        Collection storage collection = collections[collectionId];
+        require(collection.creator == msg.sender, "Not authorized");
+        
+        collection.isPaused = true;
     }
+
+    function unpauseCollection(uint256 collectionId) public {
+        Collection storage collection = collections[collectionId];
+        require(collection.creator == msg.sender, "Not authorized");
+        
+        collection.isPaused = false;
+    }
+
+    // Admin functions for verification
+    function verifyCreator(address creator, bool verified) public onlyOwner {
+        verifiedCreators[creator] = verified;
+        emit CreatorVerified(creator, verified);
+    }
+
+    function verifyCollection(uint256 collectionId, bool verified) public onlyOwner {
+        verifiedCollections[collectionId] = verified;
+        collections[collectionId].isVerified = verified;
+        emit CollectionVerified(collectionId, verified);
+    }
+
+    function getCollection(uint256 collectionId) public view returns (Collection memory) {
+        return collections[collectionId];
+    }
+
+    function getNFT(uint256 tokenId) public view returns (NFT memory) {
+        return nfts[tokenId];
+    }
+
+    function getMetadataUpdates(uint256 tokenId) public view returns (MetadataChange[] memory) {
+        return metadataUpdates[tokenId];
+    }
+
+    function getCollectionNFTs(uint256 collectionId) public view returns (uint256[] memory) {
+        uint256[] memory tokenIds = new uint256[](collections[collectionId].totalMinted);
+        uint256 count = 0;
+        
+        for (uint256 i = 0; i < nftCounter; i++) {
+            if (nfts[i].collectionId == collectionId) {
+                tokenIds[count] = i;
+                count++;
+            }
+        }
+        
+        return tokenIds;
+    }
+
+    function getCollectionsByCreator(address creator) public view returns (uint256[] memory) {
+        uint256[] memory collectionIds = new uint256[](collectionCounter);
+        uint256 count = 0;
+        
+        for (uint256 i = 0; i < collectionCounter; i++) {
+            if (collections[i].creator == creator) {
+                collectionIds[count] = i;
+                count++;
+            }
+        }
+        
+        return collectionIds;
+    }
+
+    function getPublicCollections() public view returns (uint256[] memory) {
+        uint256[] memory collectionIds = new uint256[](collectionCounter);
+        uint256 count = 0;
+        
+        for (uint256 i = 0; i < collectionCounter; i++) {
+            if (collections[i].isPublic) {
+                collectionIds[count] = i;
+                count++;
+            }
+        }
+        
+        return collectionIds;
+    }
+
+    function getVerifiedCollections() public view returns (uint256[] memory) {
+        uint256[] memory collectionIds = new uint256[](collectionCounter);
+        uint256 count = 0;
+        
+        for (uint256 i = 0; i < collectionCounter; i++) {
+            if (collections[i].isVerified) {
+                collectionIds[count] = i;
+                count++;
+            }
+        }
+        
+        return collectionIds;
+    }
+
+    function tokenURI(uint256 tokenId) public view virtual override(ERC721Upgradeable, ERC721URIStorageUpgradeable) returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721Upgradeable, ERC721URIStorageUpgradeable) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 }
+
