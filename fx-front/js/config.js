@@ -2,6 +2,9 @@
 // This file contains all the configuration constants for the marketplace
 
 const CONFIG = {
+    // Development/Demo Settings
+    DEMO_MODE: true, // Set to false in production
+    
     // Network Configuration
     NETWORK: {
         CHAIN_ID: 31337, // Localhost

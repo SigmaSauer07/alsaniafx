@@ -425,14 +425,28 @@
         // Initialize admin panel
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                // Check wallet connection
+                console.log('🚀 Initializing admin panel...');
+                
+                // Initialize admin manager
+                window.adminManager = new AdminManager();
+                await window.adminManager.init();
+                
+                // Check demo mode first
+                if (CONFIG.DEMO_MODE) {
+                    console.log('🚀 Demo mode - bypassing wallet check');
+                    showAdminDashboard();
+                    await loadAdminData();
+                    return;
+                }
+
+                // Check wallet connection for production mode
                 if (!window.web3Manager || !window.web3Manager.isWalletConnected()) {
                     showAccessDenied('Please connect your wallet to access the admin panel.');
                     return;
                 }
 
                 // Check admin access
-                const hasAccess = await checkAdminAccess();
+                const hasAccess = await window.adminManager.checkAccess();
                 if (!hasAccess) {
                     showAccessDenied('You do not have admin privileges.');
                     return;
@@ -445,8 +459,8 @@
                 await loadAdminData();
                 
             } catch (error) {
-                console.error('Admin panel initialization error:', error);
-                showAccessDenied('Error initializing admin panel.');
+                console.error('❌ Admin panel initialization error:', error);
+                showAccessDenied('Error initializing admin panel: ' + error.message);
             }
         });
 
@@ -488,7 +502,8 @@
             const adminStatus = document.getElementById('adminStatus');
             
             if (walletAddress) {
-                walletAddress.textContent = UTILS.formatAddress(window.web3Manager.getCurrentAccount());
+                const account = window.web3Manager?.getCurrentAccount() || 'demo-user';
+                walletAddress.textContent = Utils.formatAddress(account);
             }
             if (adminStatus) {
                 adminStatus.textContent = 'Admin';
@@ -499,6 +514,8 @@
         // Load admin data
         async function loadAdminData() {
             try {
+                console.log('📊 Loading admin data...');
+                
                 // Load platform settings
                 await loadPlatformSettings();
                 
@@ -511,8 +528,42 @@
                 // Load approved tokens
                 await loadApprovedTokens();
                 
+                console.log('✅ Admin data loaded successfully');
             } catch (error) {
-                console.error('Error loading admin data:', error);
+                console.error('❌ Error loading admin data:', error);
+                // Don't fail completely, just log the error
+            }
+        }
+
+        // Platform settings loader
+        async function loadPlatformSettings() {
+            console.log('📋 Loading platform settings...');
+            if (window.adminManager) {
+                await window.adminManager.loadPlatformSettings();
+            }
+        }
+
+        // Statistics loader  
+        async function loadAdminStats() {
+            console.log('📈 Loading admin statistics...');
+            if (window.adminManager) {
+                await window.adminManager.loadAdminStats();
+            }
+        }
+
+        // Role holders loader
+        async function loadRoleHolders() {
+            console.log('👥 Loading role holders...');
+            if (window.adminManager) {
+                await window.adminManager.loadRoleHolders();
+            }
+        }
+
+        // Approved tokens loader
+        async function loadApprovedTokens() {
+            console.log('🪙 Loading approved tokens...');
+            if (window.adminManager) {
+                await window.adminManager.loadApprovedTokens();
             }
         }
 

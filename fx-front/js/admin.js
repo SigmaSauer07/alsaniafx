@@ -29,19 +29,37 @@ class AdminManager {
     // Check if user has admin access
     async checkAccess() {
         try {
-            const contract = window.web3Manager.getContract('marketplace');
+            console.log('🔍 Checking admin access...');
+            console.log('📍 Demo mode:', CONFIG.DEMO_MODE);
+            
+            // Demo mode bypass for testing
+            if (CONFIG.DEMO_MODE) {
+                console.log('🚀 Demo mode enabled - granting admin access');
+                this.currentUser = window.web3Manager?.getCurrentAccount() || 'demo-user';
+                this.isAdmin = true;
+                console.log('✅ Admin access granted (demo mode)');
+                return true;
+            }
+
+            const contract = window.web3Manager?.getContract('marketplace');
+            console.log('📄 Contract:', contract ? 'Found' : 'Not found');
             if (!contract) return false;
 
             this.currentUser = window.web3Manager.getCurrentAccount();
+            console.log('👤 Current user:', this.currentUser);
             if (!this.currentUser) return false;
 
             const isAdmin = await contract.hasRole(CONFIG.ROLES.ADMIN_ROLE, this.currentUser);
             const isTeam = await contract.hasRole(CONFIG.ROLES.TEAM_ROLE, this.currentUser);
 
+            console.log('🔑 Admin role:', isAdmin);
+            console.log('🔑 Team role:', isTeam);
+
             this.isAdmin = isAdmin || isTeam;
+            console.log('✅ Final admin status:', this.isAdmin);
             return this.isAdmin;
         } catch (error) {
-            console.error('Error checking admin access:', error);
+            console.error('❌ Error checking admin access:', error);
             return false;
         }
     }
