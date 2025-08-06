@@ -52,6 +52,7 @@ contract AlsaniaFX is
         uint256 highestBid;
         address highestBidder;
         bool ended;
+        string metadata;
         uint256 createdAt;
     }
 
@@ -258,6 +259,7 @@ contract AlsaniaFX is
             highestBid: 0,
             highestBidder: address(0),
             ended: false,
+            metadata: metadata,
             createdAt: block.timestamp
         });
 
