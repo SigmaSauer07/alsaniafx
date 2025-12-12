@@ -65,7 +65,6 @@ cd fx-front && python3 -m http.server 8080
 - **Creator**: Enhanced creation tools and analytics
 
 ### 🔧 **Admin Dashboard**
-- **Platform Settings**: Fee management (1-10% adjustable)
 - **Role Management**: Grant/revoke roles with blockchain verification
 - **Token Control**: Approve/disapprove ERC20 tokens for trading
 - **Analytics**: Real-time marketplace statistics and insights
